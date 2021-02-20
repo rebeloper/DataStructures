@@ -7,33 +7,45 @@
 
 import Foundation
 
-public struct Stack<T> {
-    private var elements: [T] = []
+public struct Stack<Element> {
+    private var storage: [Element] = []
+    public init() { }
     
-    public mutating func push(_ element: T) {
-        elements.append(element)
+    public init(_ elements: [Element]) {
+        storage = elements
     }
     
-    public mutating func pop() -> T? {
-        return elements.popLast()
+    public mutating func push(_ element: Element) {
+        storage.append(element)
     }
     
-    public func peek() -> T? {
-        return elements.last
+    @discardableResult
+    public mutating func pop() -> Element? {
+        storage.popLast()
+    }
+    
+    public func peek() -> Element? {
+        storage.last
+    }
+    
+    public var isEmpty: Bool {
+        peek() == nil
+    }
+}
+
+extension Stack: ExpressibleByArrayLiteral {
+    public init(arrayLiteral elements: Element...) {
+        storage = elements
     }
 }
 
 extension Stack: CustomStringConvertible {
     public var description: String {
-        let header = "----Stack Begin----\n"
-        let bottomDivider = "\n----Stack End----\n"
-        
-        var body = ""
-        elements.reversed().forEach { (element) in
-            body.append("\(element)\n")
-        }
-        
-        return "\(header) \(body) \(bottomDivider)"
+        """
+        ----Stack----
+        \(storage.map {"\($0)"}.reversed().joined(separator: "\n"))
+        -----------
+        """
     }
 }
 
